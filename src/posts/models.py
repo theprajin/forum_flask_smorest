@@ -10,9 +10,9 @@ class Post(db.Model):
     content = db.Column(db.Text, nullable=False)
     comments = db.relationship("Comment", backref="post", lazy="dynamic")
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updated_at = db.Column(
-        db.DateTime, nullable=False, default=datetime.now(), onupdate=datetime.now()
+        db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now
     )
 
     def __str__(self) -> str:

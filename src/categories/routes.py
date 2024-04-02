@@ -13,11 +13,12 @@ from .crud import (
 )
 from .exceptions import CategoryNotFound, CategoryAlreadyExists
 from src.posts.crud import get_post_list
+from src.constants import URL_PREFIX
 
 category_blp = Blueprint(
     "Categories",
     __name__,
-    url_prefix="/categories",
+    url_prefix=f"{URL_PREFIX}/categories",
 )
 
 
@@ -52,7 +53,7 @@ class CategoryByID(MethodView):
         try:
             return get_category_or_404(category_id)
         except CategoryNotFound:
-            abort(404, message=f"Category with ID {category_id} not found")
+            abort(404, message=f"Category with ID '{category_id}' not found")
         except Exception as e:
             return str(e)
 
@@ -65,7 +66,7 @@ class CategoryByID(MethodView):
             category.name = category_data.get("name") or category.name
             return update_category(category)
         except CategoryNotFound:
-            abort(404, message=f"Category with ID {category_id} not found")
+            abort(404, message=f"Category with ID '{category_id}' not found")
         except Exception as e:
             return str(e)
 
@@ -77,6 +78,6 @@ class CategoryByID(MethodView):
             delete_category(category_id)
 
         except CategoryNotFound:
-            abort(404, message=f"Category with ID {category_id} not found")
+            abort(404, message=f"Category with ID '{category_id}' not found")
         except Exception as e:
             return str(e)

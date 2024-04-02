@@ -12,7 +12,7 @@ from src.categories.exceptions import CategoryNotFound
 post_blp = Blueprint(
     "Posts",
     __name__,
-    url_prefix=URL_PREFIX,
+    url_prefix=f"{URL_PREFIX}/posts",
 )
 
 
@@ -33,7 +33,7 @@ class Post(MethodView):
             post = create_post(post_data)
             return post
         except CategoryNotFound:
-            abort(404, message=f"Category with ID {category_id} not found")
+            abort(404, message=f"Category with ID '{category_id}' not found")
         except Exception as e:
             return str(e)
 
@@ -46,7 +46,7 @@ class PostByID(MethodView):
         try:
             return get_post_or_404(post_id)
         except PostNotFound:
-            abort(404, message=f"Post with ID {post_id} not found")
+            abort(404, message=f"Post with ID '{post_id}' not found")
         except Exception as e:
             return str(e)
 
@@ -60,7 +60,7 @@ class PostByID(MethodView):
             post.content = post_data.get("content") or post.content
             return update_post(post)
         except PostNotFound:
-            abort(404, message=f"Post with ID {post_id} not found")
+            abort(404, message=f"Post with ID '{post_id}' not found")
         except Exception as e:
             return str(e)
 
@@ -72,6 +72,6 @@ class PostByID(MethodView):
 
             return delete_post(post_id)
         except PostNotFound:
-            abort(404, message=f"Post with ID {post_id} not found")
+            abort(404, message=f"Post with ID '{post_id}' not found")
         except Exception as e:
             return str(e)

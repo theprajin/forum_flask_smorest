@@ -12,11 +12,12 @@ from .crud import (
 from .exceptions import CommentNotFound
 from src.posts.crud import get_post_or_404
 from src.posts.exceptions import PostNotFound
+from src.constants import URL_PREFIX
 
 comment_blp = Blueprint(
     "Comments",
     __name__,
-    url_prefix="/comments",
+    url_prefix=f"{URL_PREFIX}/comments",
 )
 
 
@@ -38,7 +39,7 @@ class Comment(MethodView):
             comment = create_comment(comment_data)
             return comment
         except PostNotFound:
-            abort(404, message=f"Post with ID {post_id} not found")
+            abort(404, message=f"Post with ID '{post_id}' not found")
         except Exception as e:
             return str(e)
 
@@ -52,7 +53,7 @@ class CommentByID(MethodView):
         try:
             return get_comment_or_404(comment_id)
         except CommentNotFound:
-            abort(404, message=f"Comment with ID {comment_id} not found")
+            abort(404, message=f"Comment with ID '{comment_id}' not found")
         except Exception as e:
             return str(e)
 
@@ -65,7 +66,7 @@ class CommentByID(MethodView):
             comment.content = comment_data.get("content") or comment.content
             return update_comment(comment)
         except CommentNotFound:
-            abort(404, message=f"Comment with ID {comment_id} not found")
+            abort(404, message=f"Comment with ID '{comment_id}' not found")
         except Exception as e:
             return str(e)
 
@@ -76,6 +77,6 @@ class CommentByID(MethodView):
             get_comment_or_404(comment_id)
             delete_comment(comment_id)
         except CommentNotFound:
-            abort(404, message=f"Comment with ID {comment_id} not found")
+            abort(404, message=f"Comment with ID '{comment_id}' not found")
         except Exception as e:
             return str(e)
