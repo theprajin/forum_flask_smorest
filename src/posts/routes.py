@@ -6,6 +6,8 @@ from .schemas import PostCreate, PostResponse, PostUpdate
 from .crud import get_post_or_404, get_post_list, create_post, update_post, delete_post
 from src.constants import URL_PREFIX
 from .exceptions import PostNotFound
+from src.categories.crud import get_category_or_404
+from src.categories.exceptions import CategoryNotFound
 
 post_blp = Blueprint(
     "Posts",
@@ -25,8 +27,15 @@ class Post(MethodView):
     @post_blp.response(201, PostResponse)
     def post(self, post_data):
         """Create Post"""
-        post = create_post(post_data)
-        return post
+        try:
+            category_id = post_data.get("category_id")
+            get_category_or_404(category_id)
+            post = create_post(post_data)
+            return post
+        except CategoryNotFound:
+            abort(404, message=f"Category with ID {category_id} not found")
+        except Exception as e:
+            return str(e)
 
 
 @post_blp.route("/<int:post_id>")

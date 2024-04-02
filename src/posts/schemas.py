@@ -10,6 +10,7 @@ class PostCreate(PostBase):
     id = ma.fields.Integer(dump_only=True)
     title = ma.fields.String(required=True)
     content = ma.fields.String(required=True)
+    category_id = ma.fields.Integer(required=True)
     created_at = ma.fields.DateTime(dump_only=True)
     updated_at = ma.fields.DateTime(dump_only=True)
 
@@ -20,5 +21,6 @@ class PostUpdate(PostBase):
 
 class PostResponse(PostBase):
     id = ma.fields.Integer(dump_only=True)
+    category_id = ma.fields.Integer(dump_only=True)
     created_at = ma.fields.DateTime(dump_only=True)
     updated_at = ma.fields.DateTime(dump_only=True)

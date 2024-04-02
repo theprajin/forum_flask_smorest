@@ -13,6 +13,7 @@ def create_app():
 
     from src.posts.models import Post
     from src.comments.models import Comment
+    from src.categories.models import Category
 
     migrate.init_app(app, db)
     jwt.init_app(app)
@@ -23,8 +24,10 @@ def create_app():
 
     from src.posts import routes as posts_routes
     from src.comments import routes as comments_routes
+    from src.categories import routes as categories_routes
 
     api = Api(app)
+    api.register_blueprint(categories_routes.category_blp)
     api.register_blueprint(posts_routes.post_blp)
     api.register_blueprint(comments_routes.comment_blp)
 
