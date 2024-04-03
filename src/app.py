@@ -16,6 +16,7 @@ def create_app():
     from src.categories.models import Category
     from src.threads.models import Thread
     from src.tags.models import Tag
+    from src.users.models import User
 
     migrate.init_app(app, db)
     jwt.init_app(app)
@@ -29,6 +30,7 @@ def create_app():
     from src.categories import routes as categories_routes
     from src.threads import routes as threads_routes
     from src.tags import routes as tags_routes
+    from src.auth import routes as auth_routes
 
     api = Api(app)
     api.register_blueprint(categories_routes.category_blp)
@@ -36,5 +38,6 @@ def create_app():
     api.register_blueprint(comments_routes.comment_blp)
     api.register_blueprint(threads_routes.thread_blp)
     api.register_blueprint(tags_routes.tag_blp)
+    api.register_blueprint(auth_routes.auth_blp)
 
     return app
