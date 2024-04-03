@@ -3,6 +3,12 @@ from .models import User
 from .exceptions import UserNotFound, UserAlreadyExists
 
 
+def get_user_list():
+    users = User.query.all()
+    print(users)
+    return users
+
+
 def get_user_by_id(user_id):
     user = User.query.get(user_id)
     if not user:

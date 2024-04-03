@@ -31,6 +31,7 @@ def create_app():
     from src.threads import routes as threads_routes
     from src.tags import routes as tags_routes
     from src.auth import routes as auth_routes
+    from src.users import routes as users_routes
 
     api = Api(app)
     api.register_blueprint(categories_routes.category_blp)
@@ -39,5 +40,6 @@ def create_app():
     api.register_blueprint(threads_routes.thread_blp)
     api.register_blueprint(tags_routes.tag_blp)
     api.register_blueprint(auth_routes.auth_blp)
+    api.register_blueprint(users_routes.user_blp)
 
     return app
