@@ -12,7 +12,6 @@ from .crud import (
     get_category_by_name,
 )
 from .exceptions import CategoryNotFound, CategoryAlreadyExists
-from src.posts.crud import get_post_list
 from src.constants import URL_PREFIX
 
 category_blp = Blueprint(

@@ -14,7 +14,7 @@ class BaseConfig:
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=int(getenv("JWT_ACCESS_TOKEN_EXPIRES")))
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=int(getenv("JWT_REFRESH_TOKEN_EXPIRES")))
 
-    API_TITLE = "Store API"
+    API_TITLE = "Forum API"
     API_VERSION = "v1"
     OPENAPI_VERSION = "3.0.2"
     OPENAPI_JSON_PATH = "api-spec.json"

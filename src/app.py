@@ -15,6 +15,7 @@ def create_app():
     from src.comments.models import Comment
     from src.categories.models import Category
     from src.threads.models import Thread
+    from src.tags.models import Tag
 
     migrate.init_app(app, db)
     jwt.init_app(app)
@@ -27,11 +28,13 @@ def create_app():
     from src.comments import routes as comments_routes
     from src.categories import routes as categories_routes
     from src.threads import routes as threads_routes
+    from src.tags import routes as tags_routes
 
     api = Api(app)
     api.register_blueprint(categories_routes.category_blp)
     api.register_blueprint(posts_routes.post_blp)
     api.register_blueprint(comments_routes.comment_blp)
     api.register_blueprint(threads_routes.thread_blp)
+    api.register_blueprint(tags_routes.tag_blp)
 
     return app
