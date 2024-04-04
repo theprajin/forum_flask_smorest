@@ -1,9 +1,10 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_smorest import Api
 
 from . import configurations
 from .extensions import db, jwt, cors, migrate
 from src.common.service import register_all_models
+from src.common.exceptions import UnauthorizedAccess
 
 
 def create_app():
@@ -29,9 +30,9 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
 
-    @app.route("/")
-    def index():
-        return {"message": "Hello World"}
+    @app.errorhandler(UnauthorizedAccess)
+    def handle_unauthorized_access(error):
+        return jsonify({"code": 401, "error": "Unauthorized Access"}), 401
 
     from src.posts import routes as posts_routes
     from src.comments import routes as comments_routes

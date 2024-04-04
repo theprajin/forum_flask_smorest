@@ -8,6 +8,8 @@ from src.constants import URL_PREFIX
 from .exceptions import PostNotFound
 from src.categories.crud import get_category_or_404
 from src.categories.exceptions import CategoryNotFound
+from src.common.dependencies import load_user_from_request
+from src.common.exceptions import UnauthorizedAccess
 
 post_blp = Blueprint(
     "Posts",
@@ -25,6 +27,7 @@ class Post(MethodView):
 
     @post_blp.arguments(PostCreate)
     @post_blp.response(201, PostResponse)
+    @load_user_from_request
     def post(self, post_data):
         """Create Post"""
         try:
