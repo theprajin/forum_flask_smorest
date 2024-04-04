@@ -23,6 +23,8 @@ def create_app():
     from src.tags.models import Tag
     from src.users.models import User
     from src.post_views.models import PostView
+    from src.roles.models import Role
+    from src.permissions.models import Permisssion
 
     with app.app_context():
         register_all_models()
@@ -41,14 +43,19 @@ def create_app():
     from src.tags import routes as tags_routes
     from src.auth import routes as auth_routes
     from src.users import routes as users_routes
+    from src.roles import routes as roles_routes
+    from src.permissions.routes import permission_blp, content_type_blp
 
     api = Api(app)
+    api.register_blueprint(auth_routes.auth_blp)
+    api.register_blueprint(users_routes.user_blp)
+    api.register_blueprint(content_type_blp)
+    api.register_blueprint(permission_blp)
+    api.register_blueprint(roles_routes.role_blp)
     api.register_blueprint(categories_routes.category_blp)
     api.register_blueprint(posts_routes.post_blp)
     api.register_blueprint(comments_routes.comment_blp)
     api.register_blueprint(threads_routes.thread_blp)
     api.register_blueprint(tags_routes.tag_blp)
-    api.register_blueprint(auth_routes.auth_blp)
-    api.register_blueprint(users_routes.user_blp)
 
     return app
