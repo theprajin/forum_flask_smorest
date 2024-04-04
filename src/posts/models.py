@@ -1,9 +1,10 @@
 from datetime import datetime
 from src.extensions import db
+from src.common.models import AutoRegisterModel
 from src.tags.models import post_tag_table
 
 
-class Post(db.Model):
+class Post(AutoRegisterModel):
     __tablename__ = "posts"
 
     id = db.Column(db.Integer, primary_key=True)

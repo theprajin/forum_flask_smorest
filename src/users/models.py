@@ -2,9 +2,10 @@ from datetime import datetime
 from passlib.hash import bcrypt
 
 from src.extensions import db
+from src.common.models import AutoRegisterModel
 
 
-class User(db.Model):
+class User(AutoRegisterModel):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(255), nullable=False)

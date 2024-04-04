@@ -1,8 +1,9 @@
 from datetime import datetime
 from src.extensions import db
+from src.common.models import AutoRegisterModel
 
 
-class Category(db.Model):
+class Category(AutoRegisterModel):
     __tablename__ = "categories"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)

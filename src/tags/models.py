@@ -1,5 +1,6 @@
 from datetime import datetime
 from src.extensions import db
+from src.common.models import AutoRegisterModel
 
 
 post_tag_table = db.Table(
@@ -9,7 +10,7 @@ post_tag_table = db.Table(
 )
 
 
-class Tag(db.Model):
+class Tag(AutoRegisterModel):
     __tablename__ = "tags"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)

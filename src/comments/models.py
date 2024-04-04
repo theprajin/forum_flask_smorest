@@ -1,8 +1,9 @@
 from datetime import datetime
 from src.extensions import db
+from src.common.models import AutoRegisterModel
 
 
-class Comment(db.Model):
+class Comment(AutoRegisterModel):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)

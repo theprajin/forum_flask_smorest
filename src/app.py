@@ -3,6 +3,7 @@ from flask_smorest import Api
 
 from . import configurations
 from .extensions import db, jwt, cors, migrate
+from src.common.service import register_all_models
 
 
 def create_app():
@@ -11,12 +12,19 @@ def create_app():
     cors.init_app(app)
     db.init_app(app)
 
+    from src.permissions.models import ContentType
+
+    from src.common.models import AutoRegisterModel
     from src.posts.models import Post
     from src.comments.models import Comment
     from src.categories.models import Category
     from src.threads.models import Thread
     from src.tags.models import Tag
     from src.users.models import User
+    from src.post_views.models import PostView
+
+    with app.app_context():
+        register_all_models()
 
     migrate.init_app(app, db)
     jwt.init_app(app)
