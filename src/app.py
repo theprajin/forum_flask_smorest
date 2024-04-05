@@ -37,6 +37,7 @@ def create_app():
     from src.post_views.models import PostView
     from src.roles.models import Role
     from src.permissions.models import Permisssion
+    from src.auth.models import TokenBlockList
 
     with app.app_context():
         register_all_models()

@@ -6,15 +6,15 @@ from flask_jwt_extended import (
     create_refresh_token,
     get_jwt_identity,
     jwt_required,
+    get_jwt,
 )
 from src.extensions import db
-
-
 from src.users.models import User
 from src.users import crud as users_crud
 from src.users.schemas import UserCreate, UserResponse, UserLogin
 from src.users.exceptions import UserNotFound, UserAlreadyExists
 from src.constants import URL_PREFIX
+from .models import TokenBlockList
 
 auth_blp = Blueprint(
     "Auth",
@@ -86,6 +86,14 @@ class AccessTokenWithRefreshToken(MethodView):
         return {"access_token": new_access_token}, 200
 
 
-# @auth_blp.route("/logout")
-# class Logout(MethodView):
-#     pass
+@auth_blp.route("/logout")
+class Logout(MethodView):
+
+    @jwt_required()
+    def post(self):
+        """Logout User"""
+        jti = get_jwt()["jti"]
+        db.session.add(TokenBlockList(jti=jti))
+        db.session.commit()
+
+        return jsonify({"message": "Logout Successful"}), 200
