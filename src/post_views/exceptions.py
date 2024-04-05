@@ -1,0 +1,2 @@
+class PostAlreadyViewed(Exception):
+    pass

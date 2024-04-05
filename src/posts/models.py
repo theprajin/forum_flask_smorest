@@ -18,6 +18,7 @@ class Post(AutoRegisterModel):
         back_populates="posts",
         cascade="all, delete",
     )
+    views = db.relationship("PostView", back_populates="post")
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updated_at = db.Column(
         db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now
