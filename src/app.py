@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from flask_smorest import Api
+from sqlalchemy import inspect
 
 from . import configurations
 from .extensions import db, jwt, cors, migrate
@@ -13,8 +14,19 @@ def create_app():
     cors.init_app(app)
     db.init_app(app)
 
-    from src.permissions.models import ContentType
+    def create_content_types_table(app):
+        with app.app_context():
+            engine = db.engine
+            inspector = inspect(engine)
+            if not inspector.has_table("content_types"):
+                from src.permissions.models import ContentType
 
+                ContentType.__table__.create(engine)
+
+    with app.app_context():
+        create_content_types_table(app)
+
+    from src.permissions.models import ContentType
     from src.common.models import AutoRegisterModel
     from src.posts.models import Post
     from src.comments.models import Comment
