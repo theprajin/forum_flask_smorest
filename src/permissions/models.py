@@ -28,7 +28,12 @@ class Permisssion(AutoRegisterModel):
     content_type = db.relationship(
         "ContentType", back_populates="permissions", cascade="all, delete"
     )
-    
+    roles = db.relationship(
+        "Role",
+        secondary="role_permission",
+        back_populates="permissions",
+        cascade="all, delete",
+    )
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updated_at = db.Column(
         db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now
@@ -36,6 +41,3 @@ class Permisssion(AutoRegisterModel):
 
     def __str__(self):
         return self.name
-
-
-

@@ -1,11 +1,15 @@
+from flask import jsonify
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 
+from src.extensions import db
 from src.constants import URL_PREFIX
 from src.roles import crud
 from src.roles.exceptions import RoleAlreadyExists, RoleNotFound
 from src.roles.schemas import RoleBase, RolePermissions
 from src.permissions.models import Permisssion
+from src.permissions.crud import get_permission_or_404
+from src.permissions.exceptions import PermissionNotFound
 
 role_blp = Blueprint(
     "Roles",
@@ -66,3 +70,44 @@ class RoleByID(MethodView):
             abort(404, message=f"Role with ID '{id}' not found")
         except Exception as e:
             return str(e)
+
+
+# ==========================================================================================================================
+# Role-Permission Routes
+
+
+role_perm_blp = Blueprint(
+    "role_permissions",
+    __name__,
+    url_prefix=f"{URL_PREFIX}/role_permissions",
+)
+
+
+@role_perm_blp.route("/<int:role_id>/permissions/<int:permission_id>")
+class RolePermission(MethodView):
+
+    @role_perm_blp.response(201, RolePermissions)
+    def post(self, role_id, permission_id):
+        """Assign Role to User"""
+
+        try:
+
+            role = crud.get_role_or_404(role_id)
+            permission = get_permission_or_404(permission_id)
+
+            if role is not None and permission is not None:
+                for role_perm in role.permissions:
+                    if role_perm.id == permission.id:
+                        return jsonify({"message": "Permission already assigned"}), 400
+
+                role.permissions.append(permission)
+                db.session.commit()
+
+                return role
+
+        except RoleNotFound:
+            abort(404, message=f"Role with ID '{role_id}' not found")
+        except PermissionNotFound:
+            abort(404, message=f"Permission with ID '{permission_id}' not found")
+        except Exception as e:
+            print(e)

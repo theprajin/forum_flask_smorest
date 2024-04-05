@@ -27,6 +27,8 @@ class Permissions(MethodView):
     @permission_blp.response(201, PermissionBase)
     def post(self, permission_data):
         """Create Permission"""
+        if permission_data.get("content_type_id") == 0:
+            abort(400, message="Content type ID cannot be 0")
         permission = crud.create_permission(permission_data)
         return permission
 

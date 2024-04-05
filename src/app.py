@@ -43,7 +43,7 @@ def create_app():
     from src.tags import routes as tags_routes
     from src.auth import routes as auth_routes
     from src.users import routes as users_routes
-    from src.roles import routes as roles_routes
+    from src.roles.routes import role_blp, role_perm_blp
     from src.permissions.routes import permission_blp, content_type_blp
 
     api = Api(app)
@@ -51,7 +51,8 @@ def create_app():
     api.register_blueprint(users_routes.user_blp)
     api.register_blueprint(content_type_blp)
     api.register_blueprint(permission_blp)
-    api.register_blueprint(roles_routes.role_blp)
+    api.register_blueprint(role_blp)
+    api.register_blueprint(role_perm_blp)
     api.register_blueprint(categories_routes.category_blp)
     api.register_blueprint(posts_routes.post_blp)
     api.register_blueprint(comments_routes.comment_blp)
