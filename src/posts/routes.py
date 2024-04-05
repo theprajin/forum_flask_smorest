@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, g
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 
@@ -31,9 +31,11 @@ class Post(MethodView):
     def post(self, post_data):
         """Create Post"""
         try:
+            user_id = g.get("current_user").id
+            print(user_id)
             category_id = post_data.get("category_id")
             get_category_or_404(category_id)
-            post = create_post(post_data)
+            post = create_post(post_data, user_id)
             return post
         except CategoryNotFound:
             abort(404, message=f"Category with ID '{category_id}' not found")
@@ -55,6 +57,7 @@ class PostByID(MethodView):
 
     @post_blp.arguments(PostUpdate)
     @post_blp.response(200, PostResponse)
+    @load_user_from_request
     def patch(self, post_data, post_id):
         """Update Post"""
         try:
@@ -68,6 +71,7 @@ class PostByID(MethodView):
             return str(e)
 
     @post_blp.response(204)
+    @load_user_from_request
     def delete(self, post_id):
         """Delete Post"""
         try:

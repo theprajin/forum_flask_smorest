@@ -14,6 +14,7 @@ class User(AutoRegisterModel):
     password = db.Column(db.String(255), nullable=False)
     is_superuser = db.Column(db.Boolean, default=False, nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
+    posts = db.relationship("Post", back_populates="user", cascade="all, delete")
     roles = db.relationship(
         "Role",
         secondary="user_role",

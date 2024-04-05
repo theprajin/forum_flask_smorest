@@ -18,6 +18,8 @@ class Post(AutoRegisterModel):
         back_populates="posts",
         cascade="all, delete",
     )
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user = db.relationship("User", back_populates="posts")
     views = db.relationship("PostView", back_populates="post")
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updated_at = db.Column(

@@ -16,8 +16,9 @@ def get_post_or_404(id):
     return post
 
 
-def create_post(post_data):
+def create_post(post_data, user_id):
     post = Post(**post_data)
+    post.user_id = user_id
     db.session.add(post)
     db.session.commit()
     return post
