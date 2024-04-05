@@ -40,6 +40,7 @@ def create_user(user_data):
 
 def create_super_user(user_data):
     user = User(**user_data)
+    user.hash_password(user.password)
     user.is_superuser = True
     user.is_admin = True
     db.session.add(user)

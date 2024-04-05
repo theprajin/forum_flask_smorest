@@ -10,6 +10,7 @@ from src.roles.schemas import RoleBase, RolePermissions
 from src.permissions.models import Permisssion
 from src.permissions.crud import get_permission_or_404
 from src.permissions.exceptions import PermissionNotFound
+from src.common.dependencies import load_user_from_request, superuser_required
 
 role_blp = Blueprint(
     "Roles",
@@ -27,6 +28,8 @@ class Role(MethodView):
 
     @role_blp.arguments(RoleBase)
     @role_blp.response(201, RoleBase)
+    @superuser_required
+    @load_user_from_request
     def post(self, role_data):
         """Create Role"""
         role = crud.create_role(role_data)
@@ -48,6 +51,8 @@ class RoleByID(MethodView):
 
     @role_blp.arguments(RoleBase)
     @role_blp.response(200, RoleBase)
+    @superuser_required
+    @load_user_from_request
     def patch(self, role_data, id):
         """Update Role"""
         try:
@@ -61,6 +66,8 @@ class RoleByID(MethodView):
             return str(e)
 
     @role_blp.response(204)
+    @superuser_required
+    @load_user_from_request
     def delete(self, id):
         """Delete Role"""
         try:
@@ -87,6 +94,8 @@ role_perm_blp = Blueprint(
 class RolePermission(MethodView):
 
     @role_perm_blp.response(201, RolePermissions)
+    @superuser_required
+    @load_user_from_request
     def post(self, role_id, permission_id):
         """Assign Permission to Role"""
 

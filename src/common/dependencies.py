@@ -18,3 +18,18 @@ def load_user_from_request(fn):
             raise UnauthorizedAccess
 
     return wrapper
+
+
+def superuser_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        user = g.get("current_user")
+
+        if user is None:
+            raise UnauthorizedAccess("Unauthorized Access")
+        if user.is_superuser:
+            return fn(*args, **kwargs)
+        else:
+            raise UnauthorizedAccess("Unauthorized Access")
+
+    return wrapper

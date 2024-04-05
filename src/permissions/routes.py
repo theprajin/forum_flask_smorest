@@ -5,6 +5,7 @@ from src.constants import URL_PREFIX
 from src.permissions import crud
 from src.permissions.exceptions import PermissionNotFound, ContentTypeNotFound
 from src.permissions.schemas import PermissionBase, ContentTypeBase
+from src.common.dependencies import load_user_from_request, superuser_required
 
 from src.constants import URL_PREFIX
 
@@ -25,6 +26,8 @@ class Permissions(MethodView):
 
     @permission_blp.arguments(PermissionBase)
     @permission_blp.response(201, PermissionBase)
+    @superuser_required
+    @load_user_from_request
     def post(self, permission_data):
         """Create Permission"""
         if permission_data.get("content_type_id") == 0:
@@ -47,6 +50,8 @@ class PermissionByID(MethodView):
 
     @permission_blp.arguments(PermissionBase)
     @permission_blp.response(200, PermissionBase)
+    @superuser_required
+    @load_user_from_request
     def patch(self, permission_data, id):
         """Update Permission"""
         try:
@@ -57,6 +62,8 @@ class PermissionByID(MethodView):
             abort(404, message=f"Permission with ID '{id}' not found")
 
     @permission_blp.response(204)
+    @superuser_required
+    @load_user_from_request
     def delete(self, id):
         """Delete Permission"""
         try:
