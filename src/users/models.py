@@ -14,6 +14,12 @@ class User(AutoRegisterModel):
     password = db.Column(db.String(255), nullable=False)
     is_superuser = db.Column(db.Boolean, default=False, nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
+    roles = db.relationship(
+        "Role",
+        secondary="user_role",
+        back_populates="users",
+        cascade="all, delete",
+    )
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updated_at = db.Column(
         db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now
@@ -27,3 +33,10 @@ class User(AutoRegisterModel):
 
     def verify_password(self, password):
         return bcrypt.verify(password, self.password)
+
+
+user_role_table = db.Table(
+    "user_role",
+    db.Column("user_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
+    db.Column("role_id", db.Integer, db.ForeignKey("roles.id"), primary_key=True),
+)

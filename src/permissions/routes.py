@@ -47,7 +47,6 @@ class PermissionByID(MethodView):
 
     @permission_blp.arguments(PermissionBase)
     @permission_blp.response(200, PermissionBase)
-    @permission_blp.doc(params={"id": "Permission ID"})
     def patch(self, permission_data, id):
         """Update Permission"""
         try:
@@ -57,7 +56,7 @@ class PermissionByID(MethodView):
         except PermissionNotFound:
             abort(404, message=f"Permission with ID '{id}' not found")
 
-    @permission_blp.doc(params={"id": "Permission ID"})
+    @permission_blp.response(204)
     def delete(self, id):
         """Delete Permission"""
         try:

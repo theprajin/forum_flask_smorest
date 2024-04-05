@@ -79,16 +79,16 @@ class RoleByID(MethodView):
 role_perm_blp = Blueprint(
     "role_permissions",
     __name__,
-    url_prefix=f"{URL_PREFIX}/role_permissions",
+    url_prefix=f"{URL_PREFIX}/",
 )
 
 
-@role_perm_blp.route("/<int:role_id>/permissions/<int:permission_id>")
+@role_perm_blp.route("/roles/<int:role_id>/permissions/<int:permission_id>")
 class RolePermission(MethodView):
 
     @role_perm_blp.response(201, RolePermissions)
     def post(self, role_id, permission_id):
-        """Assign Role to User"""
+        """Assign Permission to Role"""
 
         try:
 

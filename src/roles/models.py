@@ -13,6 +13,12 @@ class Role(AutoRegisterModel):
         back_populates="roles",
         cascade="all, delete",
     )
+    users = db.relationship(
+        "User",
+        secondary="user_role",
+        back_populates="roles",
+        cascade="all, delete",
+    )
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updated_at = db.Column(
         db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now

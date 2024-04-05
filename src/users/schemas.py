@@ -2,6 +2,8 @@ import marshmallow as ma
 from marshmallow import validates, ValidationError
 from email_validator import validate_email, EmailNotValidError
 
+from src.roles.schemas import RoleBase
+
 
 class UserCreate(ma.Schema):
     id = ma.fields.Int(dump_only=True)
@@ -55,3 +57,14 @@ class UserLogin(ma.Schema):
         elif len(value) > 30:
             raise ValidationError("Password must be less than 30 characters long")
         return value
+
+
+class UserRole(UserResponse):
+
+    roles = ma.fields.List(ma.fields.Nested("RoleBase"), dump_only=True)
+
+
+class RoleResponseSchema(RoleBase):
+    users = ma.fields.Nested(
+        UserRole, only=("id",), many=True, exclude=("role",), required=False
+    )

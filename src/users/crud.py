@@ -9,7 +9,7 @@ def get_user_list():
     return users
 
 
-def get_user_by_id(user_id):
+def get_user_or_404(user_id):
     user = User.query.get(user_id)
     if not user:
         raise UserNotFound
