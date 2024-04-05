@@ -15,8 +15,9 @@ def get_comment_or_404(id):
     return comment
 
 
-def create_comment(comment_data):
+def create_comment(comment_data, user_id):
     comment = Comment(**comment_data)
+    comment.user_id = user_id
     db.session.add(comment)
     db.session.commit()
     return comment

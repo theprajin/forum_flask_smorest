@@ -1,3 +1,4 @@
+from flask import g
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
 
@@ -13,6 +14,7 @@ from .exceptions import CommentNotFound
 from src.posts.crud import get_post_or_404
 from src.posts.exceptions import PostNotFound
 from src.constants import URL_PREFIX
+from src.common.dependencies import load_user_from_request
 
 comment_blp = Blueprint(
     "Comments",
@@ -31,12 +33,14 @@ class Comment(MethodView):
 
     @comment_blp.arguments(CommentCreate)
     @comment_blp.response(201, CommentResponse)
+    @load_user_from_request
     def post(self, comment_data):
         """Create Comment"""
         try:
+            user_id = g.get("current_user").id
             post_id = comment_data.get("post_id")
             get_post_or_404(post_id)
-            comment = create_comment(comment_data)
+            comment = create_comment(comment_data, user_id)
             return comment
         except PostNotFound:
             abort(404, message=f"Post with ID '{post_id}' not found")
@@ -59,6 +63,7 @@ class CommentByID(MethodView):
 
     @comment_blp.arguments(CommentUpdate)
     @comment_blp.response(200, CommentResponse)
+    @load_user_from_request
     def patch(self, comment_data, comment_id):
         """Update Comment"""
         try:
@@ -71,6 +76,7 @@ class CommentByID(MethodView):
             return str(e)
 
     @comment_blp.response(204)
+    @load_user_from_request
     def delete(self, comment_id):
         """Delete Comment"""
         try:
