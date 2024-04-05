@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, g
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 
@@ -15,6 +15,7 @@ from .exceptions import ThreadNotFound
 from src.comments.crud import get_comment_or_404
 from src.comments.exceptions import CommentNotFound
 from src.constants import URL_PREFIX
+from src.common.dependencies import load_user_from_request
 
 thread_blp = Blueprint(
     "Threads",
@@ -33,12 +34,14 @@ class Thread(MethodView):
 
     @thread_blp.arguments(ThreadCreate)
     @thread_blp.response(201, ThreadResponse)
+    @load_user_from_request
     def post(self, thread_data):
         """Create Thread"""
         try:
+            user_id = g.get("current_user").id
             comment_id = thread_data.get("comment_id")
             get_comment_or_404(comment_id)
-            thread = create_thread(thread_data)
+            thread = create_thread(thread_data, user_id)
             return thread
         except CommentNotFound:
             abort(404, message=f"Comment with ID '{comment_id}' not found")
@@ -59,6 +62,7 @@ class ThreadByID(MethodView):
             return str(e)
 
     @thread_blp.response(204)
+    @load_user_from_request
     def delete(self, thread_id):
         """Delete Thread"""
         try:
@@ -71,6 +75,7 @@ class ThreadByID(MethodView):
 
     @thread_blp.arguments(ThreadUpdate)
     @thread_blp.response(200, ThreadResponse)
+    @load_user_from_request
     def patch(self, thread_data, thread_id):
         """Update Thread"""
         try:

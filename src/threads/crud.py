@@ -16,11 +16,12 @@ def get_thread_or_404(id):
     return thread
 
 
-def create_thread(thread_data):
-    post = Thread(**thread_data)
-    db.session.add(post)
+def create_thread(thread_data, user_id):
+    thread = Thread(**thread_data)
+    thread.user_id = user_id
+    db.session.add(thread)
     db.session.commit()
-    return post
+    return thread
 
 
 def update_thread(thread):
