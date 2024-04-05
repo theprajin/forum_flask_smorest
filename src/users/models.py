@@ -15,6 +15,8 @@ class User(AutoRegisterModel):
     is_superuser = db.Column(db.Boolean, default=False, nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
     posts = db.relationship("Post", back_populates="user", cascade="all, delete")
+    comments = db.relationship("Comment", back_populates="user", cascade="all, delete")
+    threads = db.relationship("Thread", back_populates="user", cascade="all, delete")
     roles = db.relationship(
         "Role",
         secondary="user_role",

@@ -36,3 +36,11 @@ def create_user(user_data):
     db.session.add(user)
     db.session.commit()
     return user
+
+
+def create_super_user(user_data):
+    user = User(**user_data)
+    user.is_superuser = True
+    user.is_admin = True
+    db.session.add(user)
+    db.session.commit()

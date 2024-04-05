@@ -34,10 +34,14 @@ class Register(MethodView):
         try:
 
             email = new_data.get("email")
-
             users_crud.get_user_by_email(email)
-            users_crud.create_user(new_data)
 
+            total_user = User.query.count()
+
+            if total_user <= 0:
+                users_crud.create_super_user(new_data)
+            else:
+                users_crud.create_user(new_data)
             return jsonify({"message": "user registration successful"}), 201
 
         except UserAlreadyExists:
