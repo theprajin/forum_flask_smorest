@@ -2,10 +2,11 @@ from flask import jsonify, g
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 
-from .schemas import PostCreate, PostResponse, PostUpdate
+from .schemas import PostCreate, PostResponse, PostUpdate, PostQuery
 from .crud import get_post_or_404, get_post_list, create_post, update_post, delete_post
-from src.constants import URL_PREFIX
 from .exceptions import PostNotFound
+from .service import get_posts
+from src.constants import URL_PREFIX
 from src.categories.crud import get_category_or_404
 from src.categories.exceptions import CategoryNotFound
 from src.common.dependencies import load_user_from_request
@@ -20,10 +21,12 @@ post_blp = Blueprint(
 
 @post_blp.route("/")
 class Post(MethodView):
+    @post_blp.arguments(PostQuery, location="query")
     @post_blp.response(200, PostResponse(many=True))
-    def get(self):
+    def get(self, queries):
         """Get Post List"""
-        return get_post_list()
+        # return get_post_list()
+        return get_posts(queries)
 
     @post_blp.arguments(PostCreate)
     @post_blp.response(201, PostResponse)

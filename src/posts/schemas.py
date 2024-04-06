@@ -24,3 +24,11 @@ class PostResponse(PostBase):
     category_id = ma.fields.Integer(dump_only=True)
     created_at = ma.fields.DateTime(dump_only=True)
     updated_at = ma.fields.DateTime(dump_only=True)
+
+
+class PostQuery(ma.Schema):
+    title = ma.fields.String(required=False)
+    page = ma.fields.Int(required=False)
+    per_page = ma.fields.Int(required=False)
+    sortField = ma.fields.String(required=False)
+    sortDirection = ma.fields.String(required=False, default="asc")
