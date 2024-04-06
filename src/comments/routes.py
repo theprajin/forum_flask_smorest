@@ -15,6 +15,7 @@ from src.posts.crud import get_post_or_404
 from src.posts.exceptions import PostNotFound
 from src.constants import URL_PREFIX
 from src.common.dependencies import load_user_from_request
+from src.common.exceptions import UnauthorizedAccess
 
 comment_blp = Blueprint(
     "Comments",
@@ -69,11 +70,13 @@ class CommentByID(MethodView):
         try:
             comment = get_comment_or_404(comment_id)
             if comment.user_id != g.get("current_user").id:
-                abort(403, message="You are not authorized to update this comment")
+                raise UnauthorizedAccess
             comment.content = comment_data.get("content") or comment.content
             return update_comment(comment)
         except CommentNotFound:
             abort(404, message=f"Comment with ID '{comment_id}' not found")
+        except UnauthorizedAccess:
+            abort(401, message="You are unauthorized to update the comment")
         except Exception as e:
             return str(e)
 
@@ -84,9 +87,11 @@ class CommentByID(MethodView):
         try:
             comment = get_comment_or_404(comment_id)
             if comment.user_id != g.get("current_user").id:
-                abort(403, message="You are not authorized to delete this comment")
+                raise UnauthorizedAccess
             delete_comment(comment_id)
         except CommentNotFound:
             abort(404, message=f"Comment with ID '{comment_id}' not found")
+        except UnauthorizedAccess:
+            abort(401, message="You are unauthorized to delete the comment")
         except Exception as e:
             return str(e)
