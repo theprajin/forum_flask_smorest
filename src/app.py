@@ -14,6 +14,7 @@ def create_app():
     cors.init_app(app)
     db.init_app(app)
 
+    # this creates the content_types table if it doesn't exist at the very beginning the app
     def create_content_types_table(app):
         with app.app_context():
             engine = db.engine
@@ -26,6 +27,7 @@ def create_app():
     with app.app_context():
         create_content_types_table(app)
 
+    # these are imported here so that db migration is done propery by flask-migrate
     from src.permissions.models import ContentType
     from src.common.models import AutoRegisterModel
     from src.posts.models import Post
@@ -39,12 +41,15 @@ def create_app():
     from src.permissions.models import Permisssion
     from src.auth.models import TokenBlockList
 
+    # this registers all the models that inherits from AutoRegisterModel
     with app.app_context():
         register_all_models()
 
     migrate.init_app(app, db)
+
     jwt.init_app(app)
 
+    # this is to handle unathorized access
     @app.errorhandler(UnauthorizedAccess)
     def handle_unauthorized_access(error):
         return jsonify({"code": 401, "error": "Unauthorized Access"}), 401
@@ -60,6 +65,7 @@ def create_app():
     from src.permissions.routes import permission_blp, content_type_blp
     from src.post_views.routes import post_view_blp
 
+    # this registers all the routes
     api = Api(app)
     api.register_blueprint(auth_routes.auth_blp)
     api.register_blueprint(users_routes.user_blp)
