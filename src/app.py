@@ -1,6 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, g
 from flask_smorest import Api
 from sqlalchemy import inspect
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from . import configurations
 from .extensions import db, jwt, cors, migrate
@@ -48,6 +49,19 @@ def create_app():
     migrate.init_app(app, db)
 
     jwt.init_app(app)
+
+    # this is to load user into g
+    @app.before_request
+    @jwt_required(optional=True)
+    def load_user_into_g():
+        user_identity = get_jwt_identity()
+        if user_identity:
+            user_id = user_identity
+            if user_id:
+                user = User.query.get(user_id)
+                g.current_user = user
+            else:
+                g.current_user = None
 
     # this is to handle unathorized access
     @app.errorhandler(UnauthorizedAccess)

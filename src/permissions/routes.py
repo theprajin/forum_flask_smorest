@@ -86,6 +86,8 @@ content_type_blp = Blueprint(
 @content_type_blp.route("/")
 class ContentTypes(MethodView):
     @content_type_blp.response(200, ContentTypeBase(many=True))
+    @superuser_required
+    @load_user_from_request
     def get(self):
         """Get Content Type List"""
         content_types = crud.get_content_type_list()
@@ -95,7 +97,8 @@ class ContentTypes(MethodView):
 @content_type_blp.route("/<int:id>")
 class ContentTypeByID(MethodView):
     @content_type_blp.response(200, ContentTypeBase)
-    @content_type_blp.doc(params={"id": "Content Type ID"})
+    @superuser_required
+    @load_user_from_request
     def get(self, id):
         """Get Content Type"""
         try:

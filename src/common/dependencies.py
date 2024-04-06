@@ -24,6 +24,7 @@ def superuser_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
         user = g.get("current_user")
+        # print(f"user is {user}")
 
         if user is None:
             raise UnauthorizedAccess("Unauthorized Access")
