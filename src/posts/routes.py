@@ -42,6 +42,7 @@ class Post(MethodView):
             return post
         except CategoryNotFound:
             abort(404, message=f"Category with ID '{category_id}' not found")
+
         except Exception as e:
             return str(e)
 
@@ -66,26 +67,30 @@ class PostByID(MethodView):
         try:
             post = get_post_or_404(post_id)
             if post.user_id != g.get("current_user").id:
-                abort(401, message="You are unauthorized to update this post")
+                raise UnauthorizedAccess
             post.title = post_data.get("title") or post.title
             post.content = post_data.get("content") or post.content
             return update_post(post)
         except PostNotFound:
             abort(404, message=f"Post with ID '{post_id}' not found")
+        except UnauthorizedAccess:
+            abort(401, message="You are unauthorized to update the post")
         except Exception as e:
             return str(e)
 
-    @post_blp.response(204)
     @load_user_from_request
     def delete(self, post_id):
         """Delete Post"""
         try:
             post = get_post_or_404(post_id)
             if post.user_id != g.get("current_user").id:
-                abort(401, message="You are unauthorized to delete this post")
+                raise UnauthorizedAccess
 
-            return delete_post(post_id)
+            delete_post(post_id)
+            return jsonify({"message": "Post deleted successfully"}), 204
         except PostNotFound:
             abort(404, message=f"Post with ID '{post_id}' not found")
+        except UnauthorizedAccess:
+            abort(401, message="You are unauthorized to delete this post")
         except Exception as e:
             return str(e)

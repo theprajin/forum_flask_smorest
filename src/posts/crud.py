@@ -10,7 +10,6 @@ def get_post_list():
 
 def get_post_or_404(id):
     post = Post.query.get(id)
-    print(post)
     if post is None:
         raise PostNotFound
     return post
@@ -30,5 +29,9 @@ def update_post(post):
 
 
 def delete_post(id):
-    Post.query.filter(Post.id == id).delete()
-    db.session.commit()
+    try:
+        Post.query.filter(Post.id == id).delete()
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return str(e)
