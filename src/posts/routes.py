@@ -65,6 +65,8 @@ class PostByID(MethodView):
         """Update Post"""
         try:
             post = get_post_or_404(post_id)
+            if post.user_id != g.get("current_user").id:
+                abort(401, message="You are unauthorized to update this post")
             post.title = post_data.get("title") or post.title
             post.content = post_data.get("content") or post.content
             return update_post(post)
@@ -78,7 +80,9 @@ class PostByID(MethodView):
     def delete(self, post_id):
         """Delete Post"""
         try:
-            get_post_or_404(post_id)
+            post = get_post_or_404(post_id)
+            if post.user_id != g.get("current_user").id:
+                abort(401, message="You are unauthorized to delete this post")
 
             return delete_post(post_id)
         except PostNotFound:
