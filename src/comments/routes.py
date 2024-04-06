@@ -68,6 +68,8 @@ class CommentByID(MethodView):
         """Update Comment"""
         try:
             comment = get_comment_or_404(comment_id)
+            if comment.user_id != g.get("current_user").id:
+                abort(403, message="You are not authorized to update this comment")
             comment.content = comment_data.get("content") or comment.content
             return update_comment(comment)
         except CommentNotFound:
@@ -80,7 +82,9 @@ class CommentByID(MethodView):
     def delete(self, comment_id):
         """Delete Comment"""
         try:
-            get_comment_or_404(comment_id)
+            comment = get_comment_or_404(comment_id)
+            if comment.user_id != g.get("current_user").id:
+                abort(403, message="You are not authorized to delete this comment")
             delete_comment(comment_id)
         except CommentNotFound:
             abort(404, message=f"Comment with ID '{comment_id}' not found")
