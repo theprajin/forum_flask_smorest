@@ -16,6 +16,8 @@ from src.comments.crud import get_comment_or_404
 from src.comments.exceptions import CommentNotFound
 from src.constants import URL_PREFIX
 from src.common.dependencies import load_user_from_request
+from src.common.exceptions import UnauthorizedAccess
+
 
 thread_blp = Blueprint(
     "Threads",
@@ -68,10 +70,12 @@ class ThreadByID(MethodView):
         try:
             thread = get_thread_or_404(thread_id)
             if thread.user_id != g.get("current_user").id:
-                abort(403, message="You are not authorized to delete this thread")
+                raise UnauthorizedAccess
             delete_thread(thread_id)
         except ThreadNotFound:
             abort(404, message=f"Thread with ID '{thread_id}' not found")
+        except UnauthorizedAccess:
+            abort(403, message="You are not authorized to delete this thread")
         except Exception as e:
             return str(e)
 
@@ -83,11 +87,13 @@ class ThreadByID(MethodView):
         try:
             thread = get_thread_or_404(thread_id)
             if thread.user_id != g.get("current_user").id:
-                abort(403, message="You are not authorized to update this thread")
+                raise UnauthorizedAccess
             thread.title = thread_data.get("title") or thread.title
             thread.content = thread_data.get("content") or thread.content
             return update_thread(thread)
         except ThreadNotFound:
             abort(404, message=f"Thread with ID '{thread_id}' not found")
+        except UnauthorizedAccess:
+            abort(403, message="You are not authorized to update this thread")
         except Exception as e:
             return str(e)
