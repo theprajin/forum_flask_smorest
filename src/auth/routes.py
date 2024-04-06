@@ -8,6 +8,7 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt,
 )
+from sqlalchemy.exc import IntegrityError
 from src.extensions import db
 from src.users.models import User
 from src.users import crud as users_crud
@@ -93,7 +94,16 @@ class Logout(MethodView):
     def post(self):
         """Logout User"""
         jti = get_jwt()["jti"]
-        db.session.add(TokenBlockList(jti=jti))
-        db.session.commit()
+        exists = TokenBlockList.query.filter_by(jti=jti).first()
 
-        return jsonify({"message": "Logout Successful"}), 200
+        if not exists:
+            try:
+                db.session.add(TokenBlockList(jti=jti))
+                db.session.commit()
+                return jsonify({"message": "Logout Successful"}), 200
+            except IntegrityError:
+                db.session.rollback()
+                return jsonify({"message": "Logout Failed"}), 500
+
+        else:
+            return jsonify({"message": "This token already expired"}), 500
