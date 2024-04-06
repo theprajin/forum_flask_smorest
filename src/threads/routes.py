@@ -66,7 +66,9 @@ class ThreadByID(MethodView):
     def delete(self, thread_id):
         """Delete Thread"""
         try:
-            get_thread_or_404(thread_id)
+            thread = get_thread_or_404(thread_id)
+            if thread.user_id != g.get("current_user").id:
+                abort(403, message="You are not authorized to delete this thread")
             delete_thread(thread_id)
         except ThreadNotFound:
             abort(404, message=f"Thread with ID '{thread_id}' not found")
@@ -80,6 +82,8 @@ class ThreadByID(MethodView):
         """Update Thread"""
         try:
             thread = get_thread_or_404(thread_id)
+            if thread.user_id != g.get("current_user").id:
+                abort(403, message="You are not authorized to update this thread")
             thread.title = thread_data.get("title") or thread.title
             thread.content = thread_data.get("content") or thread.content
             return update_thread(thread)
