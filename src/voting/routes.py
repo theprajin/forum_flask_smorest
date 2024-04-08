@@ -14,6 +14,7 @@ from .exceptions import (
     NotVoteable,
     ModelAndContentTypeMismatch,
     VoteAlreadyExists,
+    VoteTypeInvalid,
 )
 
 
@@ -54,6 +55,8 @@ class Votes(MethodView):
             abort(400, message=f"Model and Content type mismatch")
         except VoteAlreadyExists:
             abort(409, message=f"Vote already exists")
+        except VoteTypeInvalid:
+            abort(400, message=f"Vote must already exist before zeroing the vote")
 
         except Exception as e:
             return str(e)

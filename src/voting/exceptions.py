@@ -12,3 +12,7 @@ class VoteAlreadyExists(Exception):
 
 class ModelAndContentTypeMismatch(Exception):
     pass
+
+
+class VoteTypeInvalid(Exception):
+    pass

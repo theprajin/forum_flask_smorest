@@ -6,6 +6,7 @@ from .exceptions import (
     NotVoteable,
     ModelAndContentTypeMismatch,
     VoteAlreadyExists,
+    VoteTypeInvalid,
 )
 from sqlalchemy.sql.schema import Table
 
@@ -54,6 +55,9 @@ def add_vote(user_id, content_type_name, object_id, vote_direction):
             raise VoteAlreadyExists
 
     else:
+        if vote_direction == 0:
+            raise VoteTypeInvalid
+
         new_vote = Vote(
             user_id=user_id,
             content_type_id=content_type.id,
