@@ -15,6 +15,7 @@ class Thread(AutoRegisterModel):
     updated_at = db.Column(
         db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now
     )
+    voteable = db.Column(db.Boolean, default=True, nullable=False)
 
     def __str__(self):
         return f"<Thread {self.id}>"

@@ -26,5 +26,7 @@ class Post(AutoRegisterModel):
         db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now
     )
 
+    voteable = db.Column(db.Boolean, default=True, nullable=False)
+
     def __str__(self) -> str:
         return f"<Post {self.title}>"
