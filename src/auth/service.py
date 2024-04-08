@@ -1,4 +1,4 @@
-# Callback function to check if a JWT exists in the redis blocklist
+# Callback function to check if a JWT exists in the blocklist
 from extensions import jwt, db
 from src.auth.models import TokenBlockList
 
