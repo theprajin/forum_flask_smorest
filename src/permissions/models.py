@@ -10,6 +10,9 @@ class ContentType(db.Model):
     permissions = db.relationship(
         "Permisssion", back_populates="content_type", cascade="all, delete"
     )
+    votes = db.relationship(
+        "Vote", back_populates="content_type", cascade="all, delete"
+    )
 
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
 

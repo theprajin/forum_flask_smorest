@@ -29,6 +29,8 @@ class User(AutoRegisterModel):
         db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now
     )
 
+    votes = db.relationship("Vote", back_populates="user", cascade="all, delete")
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 

@@ -41,6 +41,7 @@ def create_app():
     from src.roles.models import Role
     from src.permissions.models import Permisssion
     from src.auth.models import TokenBlockList
+    from src.voting.models import Vote
 
     # this registers all the models that inherits from AutoRegisterModel
     with app.app_context():
