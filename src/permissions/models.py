@@ -23,8 +23,11 @@ class ContentType(db.Model):
 class Permisssion(AutoRegisterModel):
     __tablename__ = "permissions"
     id = db.Column(db.Integer, primary_key=True)
-    system_name = db.Column(db.String(255), nullable=False)
-    display_name = db.Column(db.String(255), nullable=False)
+    can_create = db.Column(db.Boolean, default=False, nullable=False)
+    can_read = db.Column(db.Boolean, default=False, nullable=False)
+    can_delete = db.Column(db.Boolean, default=False, nullable=False)
+    can_modify = db.Column(db.Boolean, default=False, nullable=False)
+
     content_type_id = db.Column(
         db.Integer, db.ForeignKey("content_types.id"), nullable=False
     )
