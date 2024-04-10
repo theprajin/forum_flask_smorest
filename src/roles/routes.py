@@ -6,7 +6,7 @@ from src.extensions import db
 from src.constants import URL_PREFIX
 from src.roles import crud
 from src.roles.exceptions import RoleAlreadyExists, RoleNotFound
-from src.roles.schemas import RoleBase, RolePermissions
+from src.roles.schemas import RoleBase, RolePermissions, RoleDetailResponse
 from src.permissions.models import Permisssion
 from src.permissions.crud import get_permission_or_404
 from src.permissions.exceptions import PermissionNotFound
@@ -38,7 +38,7 @@ class Role(MethodView):
 
 @role_blp.route("/<int:id>")
 class RoleByID(MethodView):
-    @role_blp.response(200, RoleBase)
+    @role_blp.response(200, RoleDetailResponse)
     def get(self, id):
         """Get Role"""
         try:

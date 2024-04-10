@@ -20,3 +20,7 @@ class CategoryResponse(CategoryBase):
 
 class CategoryUpdate(CategoryBase):
     pass
+
+
+class CategoryDetailResponse(CategoryResponse):
+    posts = ma.fields.List(ma.fields.Nested("PostResponse", only=["id", "title"]))

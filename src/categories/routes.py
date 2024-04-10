@@ -2,7 +2,12 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 
 
-from .schemas import CategoryCreate, CategoryResponse, CategoryUpdate
+from .schemas import (
+    CategoryCreate,
+    CategoryResponse,
+    CategoryUpdate,
+    CategoryDetailResponse,
+)
 from .crud import (
     get_category_list,
     create_category,
@@ -48,7 +53,7 @@ class Category(MethodView):
 class CategoryByID(MethodView):
     __model__ = "categories"
 
-    @category_blp.response(200, CategoryResponse)
+    @category_blp.response(200, CategoryDetailResponse)
     def get(self, category_id):
         """Get Category"""
         try:

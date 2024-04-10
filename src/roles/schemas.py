@@ -10,3 +10,10 @@ class RoleBase(ma.Schema):
 
 class RolePermissions(RoleBase):
     permissions = ma.fields.List(ma.fields.Nested("PermissionBase"), dump_only=True)
+
+
+class RoleDetailResponse(RoleBase):
+    permissions = ma.fields.List(ma.fields.Nested("PermissionBase"), dump_only=True)
+    users = ma.fields.List(
+        ma.fields.Nested("UserResponse", only=["id", "first_name", "last_name"])
+    )
