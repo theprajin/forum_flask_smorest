@@ -5,7 +5,7 @@ from flask_smorest import Blueprint, abort
 from src.common.dependencies import load_user_from_request, superuser_required
 from src.extensions import db
 from src.roles.exceptions import RoleNotFound
-from .schemas import UserCreate, UserResponse, UserRole, UserUpdate
+from .schemas import UserDetailResponse, UserResponse, UserRole, UserUpdate
 from .crud import get_user_or_404, get_user_list, update_user
 from .exceptions import UserAlreadyExists, UserNotFound
 from src.roles.crud import get_role_or_404
@@ -37,7 +37,7 @@ class Users(MethodView):
 class UserByID(MethodView):
     __model__ = "users"
 
-    @user_blp.response(200, UserResponse)
+    @user_blp.response(200, UserDetailResponse)
     def get(self, user_id):
         """Get User"""
         try:

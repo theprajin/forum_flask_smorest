@@ -73,3 +73,11 @@ class RoleResponseSchema(RoleBase):
 
 class UserUpdate(ma.Schema):
     is_admin = ma.fields.Boolean(required=True)
+
+
+class UserDetailResponse(UserResponse):
+    roles = ma.fields.List(ma.fields.Nested("RoleBase"), dump_only=True)
+    views = ma.fields.List(ma.fields.Nested("PostViewResponse", only=["id"]))
+    posts = ma.fields.List(ma.fields.Nested("PostResponse", only=["id"]))
+    comments = ma.fields.List(ma.fields.Nested("CommentResponse", only=["id"]))
+    threads = ma.fields.List(ma.fields.Nested("ThreadResponse", only=["id"]))
