@@ -34,6 +34,7 @@ class UserResponse(ma.Schema):
     id = ma.fields.Int(dump_only=True)
     first_name = ma.fields.String()
     last_name = ma.fields.String()
+    is_admin = ma.fields.Boolean()
     email = ma.fields.Email()
     created_at = ma.fields.DateTime(dump_only=True)
 
@@ -68,3 +69,7 @@ class RoleResponseSchema(RoleBase):
     users = ma.fields.Nested(
         UserRole, only=("id",), many=True, exclude=("role",), required=False
     )
+
+
+class UserUpdate(ma.Schema):
+    is_admin = ma.fields.Boolean(required=True)

@@ -45,3 +45,9 @@ def create_super_user(user_data):
     user.is_admin = True
     db.session.add(user)
     db.session.commit()
+
+
+def update_user(user):
+    db.session.add(user)
+    db.session.commit()
+    return user

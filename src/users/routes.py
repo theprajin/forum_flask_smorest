@@ -5,8 +5,8 @@ from flask_smorest import Blueprint, abort
 from src.common.dependencies import load_user_from_request, superuser_required
 from src.extensions import db
 from src.roles.exceptions import RoleNotFound
-from .schemas import UserCreate, UserResponse, UserRole
-from .crud import get_user_or_404, get_user_list
+from .schemas import UserCreate, UserResponse, UserRole, UserUpdate
+from .crud import get_user_or_404, get_user_list, update_user
 from .exceptions import UserAlreadyExists, UserNotFound
 from src.roles.crud import get_role_or_404
 
@@ -23,6 +23,7 @@ user_blp = Blueprint(
 
 @user_blp.route("/")
 class Users(MethodView):
+    __model__ = "users"
 
     @user_blp.response(200, UserResponse(many=True))
     @superuser_required
@@ -34,12 +35,33 @@ class Users(MethodView):
 
 @user_blp.route("/<int:user_id>")
 class UserByID(MethodView):
+    __model__ = "users"
 
     @user_blp.response(200, UserResponse)
     def get(self, user_id):
         """Get User"""
         try:
             user = get_user_or_404(user_id)
+            return user
+        except UserNotFound:
+            abort(404, message=f"User with ID '{user_id}' not found")
+        except Exception as e:
+            return str(e)
+
+    @user_blp.arguments(UserUpdate)
+    @user_blp.response(200, UserResponse)
+    @superuser_required
+    @load_user_from_request
+    def patch(self, new_user_data, user_id):
+        """Update User"""
+        try:
+            is_admin = new_user_data.get("is_admin")
+            user = get_user_or_404(user_id)
+
+            if is_admin is not None:
+                user.is_admin = is_admin
+                update_user(user)
+
             return user
         except UserNotFound:
             abort(404, message=f"User with ID '{user_id}' not found")

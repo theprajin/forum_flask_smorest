@@ -3,8 +3,10 @@ import marshmallow as ma
 
 class PermissionBase(ma.Schema):
     id = ma.fields.Int(dump_only=True)
-    system_name = ma.fields.String(required=True)
-    display_name = ma.fields.String(required=True)
+    can_create = ma.fields.Boolean(required=True)
+    can_read = ma.fields.Boolean(required=True)
+    can_delete = ma.fields.Boolean(required=True)
+    can_modify = ma.fields.Boolean(required=True)
     content_type_id = ma.fields.Integer(required=True)
     created_at = ma.fields.DateTime(dump_only=True)
 

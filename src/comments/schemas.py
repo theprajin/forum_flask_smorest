@@ -22,3 +22,9 @@ class CommentResponse(ComentBase):
 
 class CommentUpdate(ComentBase):
     post_id = ma.fields.Integer(dump_only=True)
+
+
+class CommentDetailResponse(CommentResponse):
+    user = ma.fields.Nested("UserResponse", only=["id", "first_name", "last_name"])
+    threads = ma.fields.List(ma.fields.Nested("ThreadResponse"))
+    pass

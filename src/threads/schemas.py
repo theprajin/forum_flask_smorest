@@ -22,3 +22,7 @@ class ThreadResponse(ThreadBase):
 
 class ThreadUpdate(ma.Schema):
     comment_id = ma.fields.Integer(dump_only=True)
+
+
+class ThreadDetailResponse(ThreadResponse):
+    user = ma.fields.Nested("UserResponse", only=["id", "first_name", "last_name"])

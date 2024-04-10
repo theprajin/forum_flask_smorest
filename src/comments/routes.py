@@ -2,7 +2,12 @@ from flask import g
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
 
-from .schemas import CommentResponse, CommentCreate, CommentUpdate
+from .schemas import (
+    CommentResponse,
+    CommentCreate,
+    CommentUpdate,
+    CommentDetailResponse,
+)
 from .crud import (
     get_comment_list,
     get_comment_or_404,
@@ -26,6 +31,7 @@ comment_blp = Blueprint(
 
 @comment_blp.route("/")
 class Comment(MethodView):
+    __model__ = "comments"
 
     @comment_blp.response(200, CommentResponse(many=True))
     def get(self):
@@ -51,8 +57,9 @@ class Comment(MethodView):
 
 @comment_blp.route("/<int:comment_id>")
 class CommentByID(MethodView):
+    __model__ = "comments"
 
-    @comment_blp.response(200, CommentResponse)
+    @comment_blp.response(200, CommentDetailResponse)
     def get(self, comment_id):
         """Get Comment"""
         try:
@@ -69,10 +76,10 @@ class CommentByID(MethodView):
         """Update Comment"""
         try:
             comment = get_comment_or_404(comment_id)
-            if comment.user_id != g.get("current_user").id:
-                raise UnauthorizedAccess
-            comment.content = comment_data.get("content") or comment.content
-            return update_comment(comment)
+            if comment.user_id == g.get("current_user").id or g.get("has_permission"):
+                comment.content = comment_data.get("content") or comment.content
+                return update_comment(comment)
+            raise UnauthorizedAccess
         except CommentNotFound:
             abort(404, message=f"Comment with ID '{comment_id}' not found")
         except UnauthorizedAccess:
@@ -86,9 +93,9 @@ class CommentByID(MethodView):
         """Delete Comment"""
         try:
             comment = get_comment_or_404(comment_id)
-            if comment.user_id != g.get("current_user").id:
-                raise UnauthorizedAccess
-            delete_comment(comment_id)
+            if comment.user_id == g.get("current_user").id or g.get("has_permission"):
+                delete_comment(comment_id)
+            raise UnauthorizedAccess
         except CommentNotFound:
             abort(404, message=f"Comment with ID '{comment_id}' not found")
         except UnauthorizedAccess:

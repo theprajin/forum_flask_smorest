@@ -2,7 +2,7 @@ from flask import jsonify, g
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 
-from .schemas import ThreadResponse, ThreadCreate, ThreadUpdate
+from .schemas import ThreadResponse, ThreadCreate, ThreadUpdate, ThreadDetailResponse
 from .crud import (
     get_thread_list,
     get_thread_or_404,
@@ -29,6 +29,8 @@ thread_blp = Blueprint(
 
 @thread_blp.route("/")
 class Thread(MethodView):
+    __model__ = "threads"
+
     @thread_blp.response(200, ThreadResponse(many=True))
     def get(self):
         """Get Thread List"""
@@ -53,7 +55,9 @@ class Thread(MethodView):
 
 @thread_blp.route("/<int:thread_id>")
 class ThreadByID(MethodView):
-    @thread_blp.response(200, ThreadResponse)
+    __model__ = "threads"
+
+    @thread_blp.response(200, ThreadDetailResponse)
     def get(self, thread_id):
         """Get Thread"""
         try:
@@ -69,9 +73,9 @@ class ThreadByID(MethodView):
         """Delete Thread"""
         try:
             thread = get_thread_or_404(thread_id)
-            if thread.user_id != g.get("current_user").id:
-                raise UnauthorizedAccess
-            delete_thread(thread_id)
+            if thread.user_id == g.get("current_user").id or g.get("has_permission"):
+                delete_thread(thread_id)
+            raise UnauthorizedAccess
         except ThreadNotFound:
             abort(404, message=f"Thread with ID '{thread_id}' not found")
         except UnauthorizedAccess:
@@ -86,11 +90,11 @@ class ThreadByID(MethodView):
         """Update Thread"""
         try:
             thread = get_thread_or_404(thread_id)
-            if thread.user_id != g.get("current_user").id:
-                raise UnauthorizedAccess
-            thread.title = thread_data.get("title") or thread.title
-            thread.content = thread_data.get("content") or thread.content
-            return update_thread(thread)
+            if thread.user_id == g.get("current_user").id or g.get("has_permission"):
+                thread.title = thread_data.get("title") or thread.title
+                thread.content = thread_data.get("content") or thread.content
+                return update_thread(thread)
+            raise UnauthorizedAccess
         except ThreadNotFound:
             abort(404, message=f"Thread with ID '{thread_id}' not found")
         except UnauthorizedAccess:

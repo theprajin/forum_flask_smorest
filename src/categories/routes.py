@@ -23,6 +23,7 @@ category_blp = Blueprint(
 
 @category_blp.route("/")
 class Category(MethodView):
+    __model__ = "categories"
 
     @category_blp.response(200, CategoryResponse(many=True))
     def get(self):
@@ -45,6 +46,7 @@ class Category(MethodView):
 
 @category_blp.route("/<int:category_id>")
 class CategoryByID(MethodView):
+    __model__ = "categories"
 
     @category_blp.response(200, CategoryResponse)
     def get(self, category_id):

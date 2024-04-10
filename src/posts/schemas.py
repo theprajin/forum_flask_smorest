@@ -32,3 +32,12 @@ class PostQuery(ma.Schema):
     per_page = ma.fields.Int(required=False)
     sortField = ma.fields.String(required=False)
     sortDirection = ma.fields.String(required=False, default="asc")
+
+
+class PostDetailResponse(PostResponse):
+    category = ma.fields.Nested("CategoryResponse", only=["id", "name"])
+    user = ma.fields.Nested("UserResponse", only=["id", "first_name", "last_name"])
+    tags = ma.fields.List(ma.fields.Nested("TagResponse", only=["id", "name"]))
+    views = ma.fields.List(ma.fields.Nested("PostViewResponse", only=["id"]))
+    comments = ma.fields.List(ma.fields.Nested("CommentResponse", only=["id"]))
+    pass
