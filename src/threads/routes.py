@@ -15,7 +15,7 @@ from .exceptions import ThreadNotFound
 from src.comments.crud import get_comment_or_404
 from src.comments.exceptions import CommentNotFound
 from src.constants import URL_PREFIX
-from src.common.dependencies import load_user_from_request
+from src.common.dependencies import load_user_from_request, permission_required
 from src.common.exceptions import UnauthorizedAccess
 
 
@@ -68,6 +68,7 @@ class ThreadByID(MethodView):
             return str(e)
 
     @thread_blp.response(204)
+    @permission_required(resource_type=__model__, can_delete=True)
     @load_user_from_request
     def delete(self, thread_id):
         """Delete Thread"""
@@ -85,6 +86,7 @@ class ThreadByID(MethodView):
 
     @thread_blp.arguments(ThreadUpdate)
     @thread_blp.response(200, ThreadResponse)
+    @permission_required(resource_type=__model__, can_modify=True)
     @load_user_from_request
     def patch(self, thread_data, thread_id):
         """Update Thread"""

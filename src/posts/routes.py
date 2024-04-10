@@ -65,6 +65,7 @@ class PostByID(MethodView):
 
     @post_blp.arguments(PostUpdate)
     @post_blp.response(200, PostResponse)
+    @permission_required(resource_type=__model__, can_modify=True)
     @load_user_from_request
     def patch(self, post_data, post_id):
         """Update Post"""
