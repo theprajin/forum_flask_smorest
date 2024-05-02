@@ -13,7 +13,7 @@
 - DATABASE_USERNAME=your_database_username
 - DATABASE_PASSWORD=your_database_password
 - DATABASE_HOST=localhost
-- DATABASE_PORT=port
+- DATABASE_PORT=5432
 - DATABASE_NAME=your_database_name
 - JWT_SECRET_KEY=your_secret_key
 - JWT_ACCESS_TOKEN_EXPIRES=1
