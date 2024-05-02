@@ -5,6 +5,7 @@
 - first create virtual environment using pip and activate the virtual env
 - then install the necessary package using the command "pip install -r requirements.txt"
 - the create the .env file
+- Don't forget to create a postgres database via pgadmin
 
 ### In .env file
 
